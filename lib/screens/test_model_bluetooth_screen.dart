@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bluetooth_fingerprint_colector_flutter/utilities/action_arguments.dart';
 import 'package:bluetooth_fingerprint_colector_flutter/utilities/node_functions.dart';
-
 import 'package:bluetooth_fingerprint_colector_flutter/utilities/distance_models.dart';
 import 'package:bluetooth_fingerprint_colector_flutter/components/device_info_card.dart';
 import 'package:bluetooth_fingerprint_colector_flutter/components/info_card.dart';
@@ -11,7 +10,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:bluetooth_fingerprint_colector_flutter/utilities/constants.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:bluetooth_fingerprint_colector_flutter/components/bluetooth_off_screen.dart';
+import 'package:bluetooth_fingerprint_colector_flutter/components/floating_action_button_blue_off.dart';
 import 'package:device_info/device_info.dart';
+import 'package:bluetooth_fingerprint_colector_flutter/utilities/mode.dart';
 import 'package:location/location.dart';
 
 class TestModelBluetoothScreen extends StatefulWidget {
@@ -29,7 +31,6 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
   List<int> node1RssiList = [];
   int _rssiMode;
   double _distance;
-  double _diff;
   int _idCounter = 1;
   int _currentIdCounter;
   // ========================
@@ -82,8 +83,6 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
     _locationData = await location.getLocation();
   }
 
-  //Future<List<int>> dd;
-
   FlutterBlue flutterBlue = FlutterBlue.instance;
 
   void initBluetooth() async {
@@ -98,12 +97,6 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
     //flutterBlue.startScan(timeout: kFourSec);
 
     await testScanResults(flutterBlue.isScanning, flutterBlue.scanResults);
-  }
-
-  Future<void> testStream(String text, Stream<dynamic> stream) async {
-    await for (var value in stream) {
-      print('$text: $value');
-    }
   }
 
   Future<dynamic> testScanResults(
@@ -130,36 +123,19 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
     }
   }
 
-  // Mode for the RSSI values
-  static int mode(List<int> a, int size) {
-    int maxValue = 0, maxCount = 0, i, j;
-
-    for (i = 0; i < size; ++i) {
-      int count = 0;
-      for (j = 0; j < size; ++j) {
-        if (a[j] == a[i]) ++count;
-      }
-
-      if (count > maxCount) {
-        maxCount = count;
-        maxValue = a[i];
-      }
-    }
-    return maxValue;
-  }
-
-  Widget deviceCardsOrWebPage(bool isScanning, ActionArguments args) {
+  Widget scanResultsCards(
+      bool isScanning, ActionArguments args, List<int> rssiList) {
     if (isScanning == false) {
-      if (node1RssiList.isNotEmpty) {
+      if (rssiList.isNotEmpty) {
         // mode
-        _rssiMode = mode(node1RssiList, node1RssiList.length);
+        _rssiMode = mode(rssiList, rssiList.length);
         _nodeToBeAnalysed = kNodesMap[dropdownValue];
 
         _args.model == 1
             ? _distance = calculateDistanceModel1(_rssiMode)
             : _distance = 100.100;
 
-        _diff = calculateDifference(_realDistance, _distance);
+        double diff = calculateDifference(_realDistance, _distance);
 
         // It will record only when the textField has a entry
         //if (_validate == false) {
@@ -174,10 +150,10 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
               .setData({
             'nodeName': _nodeToBeAnalysed.getName(),
             //'rssi': _rssiMode,
-            'rssi': node1RssiList,
-            'calcDistance': _distance,
+            'rssi': rssiList,
+            //'calcDistance': _distance,
             'realDistance': _realDistance,
-            'accuracy': _diff,
+            'accuracy': diff,
             'height': _height,
           });
           _currentIdCounter = _idCounter;
@@ -185,14 +161,14 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
           _pressFlotingActionButton = false;
         }
 
-        print('All RSSIs: $node1RssiList');
-        print('length: ${node1RssiList.length}');
+        print('All RSSIs: $rssiList');
+        print('length: ${rssiList.length}');
         print('rssiMode: $_rssiMode');
-        print('first: ${node1RssiList.first}');
-        print('first: ${node1RssiList.last}');
+        print('first: ${rssiList.first}');
+        print('first: ${rssiList.last}');
         print('idCounter: $_currentIdCounter');
 
-        //node1RssiList.clear();
+        //rssiList.clear();
 
         return ListView(
           children: <Widget>[
@@ -203,7 +179,7 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
             ),
             InfoCard(info: 'Distância Calc: $_distance m'),
             InfoCard(info: 'Distância real: $_realDistance m'),
-            InfoCard(info: 'Acurácia: $_diff m'),
+            InfoCard(info: 'Acurácia: $diff m'),
             InfoCard(
               info: 'Altura: $_height cm',
             ),
@@ -215,7 +191,7 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
           colour: Colors.blue,
           cardChild: Center(
             child: Text(
-              'node1RssiList is Empty',
+              'rssiList is Empty',
               style: kInfoTextStyle,
             ),
           ),
@@ -231,35 +207,6 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
         ),
       );
     }
-  }
-
-  SnackBar beaconRssiSnackbar() {
-    int rssiMode = mode(node1RssiList, node1RssiList.length);
-
-    Text content;
-    if (node1RssiList.isNotEmpty) {
-      //content = Text(
-      //    '${device.getName()}, ${device.getAddress()}, ${device.getRssi()}');
-      content = Text(
-        'Node1: $rssiMode dBm',
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-        ),
-      );
-    } else {
-      content = Text(
-        'No beacon was Found',
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-        ),
-      );
-    }
-
-    return SnackBar(
-      content: content,
-      duration: kFiveSec,
-      backgroundColor: Color(0xFF3C42BA),
-    );
   }
 
   void periodicScan() {
@@ -302,13 +249,14 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
                 //crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   //beaconRssi(),
-                  //deviceCardsOrWebPage(),
+                  //scanResultsCards(),
                   Expanded(
                     child: StreamBuilder(
                       stream: flutterBlue.isScanning,
                       builder: (context, snapshot) {
                         final isScanning = snapshot.data;
-                        return deviceCardsOrWebPage(isScanning, _args);
+                        return scanResultsCards(
+                            isScanning, _args, node1RssiList);
                       },
                     ),
                   ),
@@ -569,67 +517,5 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
   void dispose() {
     super.dispose();
     _textFieldController.dispose();
-  }
-}
-
-class Device {
-  final String _name;
-  final String _address;
-  final int _rssi;
-
-  Device(this._name, this._address, this._rssi);
-
-  String getName() {
-    return this._name;
-  }
-
-  String getAddress() {
-    return this._address;
-  }
-
-  int getRssi() {
-    return this._rssi;
-  }
-}
-
-class BluetoothOffScreen extends StatelessWidget {
-  const BluetoothOffScreen({Key key, this.state}) : super(key: key);
-
-  final BluetoothState state;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Icon(
-            Icons.bluetooth_disabled,
-            size: 200.0,
-            color: Colors.grey[500],
-          ),
-          //Text('Bluetooth Adapter is ${state.toString().substring(15)}.',
-          Text('Bluetooth está desligado',
-              style: Theme.of(context)
-                  .primaryTextTheme
-                  .headline
-                  .copyWith(color: Colors.grey[500])),
-        ],
-      ),
-    );
-  }
-}
-
-class FloatingActionButtonBlueOff extends StatelessWidget {
-  const FloatingActionButtonBlueOff({Key key, this.state}) : super(key: key);
-
-  final BluetoothState state;
-
-  @override
-  Widget build(BuildContext context) {
-    return FloatingActionButton(
-      child: Icon(Icons.error),
-      backgroundColor: Colors.red,
-    );
   }
 }
