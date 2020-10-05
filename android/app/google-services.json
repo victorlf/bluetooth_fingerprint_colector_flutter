@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "648905649674",
+    "firebase_url": "https://fingerprint-collector.firebaseio.com",
+    "project_id": "fingerprint-collector",
+    "storage_bucket": "fingerprint-collector.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:648905649674:android:00a6559c29d448ebdd79f3",
+        "android_client_info": {
+          "package_name": "com.example.bluetooth_fingerprint_colector_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "648905649674-26se9ofuuj4gh26tghu626mbsaolmp1l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLzDJ91CeMDsZn5Gnhzxt-jDK_dos82WY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "648905649674-26se9ofuuj4gh26tghu626mbsaolmp1l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
