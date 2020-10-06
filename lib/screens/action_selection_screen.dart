@@ -1,4 +1,5 @@
 import 'package:bluetooth_fingerprint_colector_flutter/screens/test_model_bluetooth_screen.dart';
+import 'package:bluetooth_fingerprint_colector_flutter/screens/beacon_proximity_bluetooth_screen.dart';
 import 'package:bluetooth_fingerprint_colector_flutter/components/reusable_card.dart';
 import 'package:bluetooth_fingerprint_colector_flutter/screens/fingerprint_screen.dart';
 import 'package:bluetooth_fingerprint_colector_flutter/screens/test_model_screen.dart';
@@ -34,6 +35,27 @@ class ActionSelectionScreen extends StatelessWidget {
                   context,
                   args.technology == 'Bluetooth'
                       ? TestModelBluetoothScreen.id
+                      : TestModelScreen.id,
+                  arguments: ActionArguments(
+                      technology: args.technology, model: args.model),
+                );
+              },
+            ),
+          ),
+          Expanded(
+            child: ReusableCard(
+              colour: Colors.blue,
+              cardChild: Center(
+                child: Text(
+                  'Beacon Proximity',
+                  style: kLabelTextStyle,
+                ),
+              ),
+              onPress: () {
+                Navigator.pushNamed(
+                  context,
+                  args.technology == 'Bluetooth'
+                      ? BeaconProximityBluetoothScreen.id
                       : TestModelScreen.id,
                   arguments: ActionArguments(
                       technology: args.technology, model: args.model),

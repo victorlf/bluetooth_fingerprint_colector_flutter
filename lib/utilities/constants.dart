@@ -26,10 +26,15 @@ const kInfoTextStyle = TextStyle(
   color: Colors.white,
 );
 
-Map<String, Node> kNodesMap = {
-  'node1': kNode1,
-  'node2': kNode2,
-};
+// Map<String, Node> kNodesMap = {
+//   'node1': kNode1,
+//   'node2': kNode2,
+// };
 
-Node kNode1 = Node('node1', '30:AE:A4:EC:9C:F6');
-Node kNode2 = Node('node2', 'FA:KE:AS:FU:CK:00');
+//Node kNode1 = Node('node1', '30:AE:A4:EC:9C:F6');
+//Node kNode2 = Node('node2', 'FA:KE:AS:FU:CK:00');
+
+Map<String, String> kNodesMap = {
+  'node1': '30:AE:A4:EC:9C:F6',
+  'node2': '30:AE:A4:EC:A3:8E',
+};

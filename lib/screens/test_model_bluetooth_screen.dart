@@ -27,7 +27,7 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
   final String _appBarTitle = 'Teste Bluetooth';
   bool _locationModeOn = false;
   ActionArguments _args;
-  Node _nodeToBeAnalysed;
+  //Node _nodeToBeAnalysed;
   List<int> node1RssiList = [];
   int _rssiMode;
   double _distance;
@@ -102,7 +102,7 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
   Future<dynamic> testScanResults(
       Stream<bool> streamIsScanning, Stream<List<ScanResult>> stream) async {
     List<int> temp = [];
-    _nodeToBeAnalysed = kNodesMap[dropdownValue];
+    //_nodeToBeAnalysed = kNodesMap[dropdownValue];
     await for (var value in stream) {
       for (ScanResult result in value) {
         Device deviceFound = Device(
@@ -110,8 +110,10 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
         // Just add to devicesMap the bluetooth devices that are in nodesMap
         // nodesMap have the project beacons
         //devicesMap[deviceFound.getAddress()] = deviceFound;
-        if (deviceFound.getName() == _nodeToBeAnalysed.getName() &&
-            deviceFound.getAddress() == _nodeToBeAnalysed.getAddress()) {
+        //if (deviceFound.getName() == _nodeToBeAnalysed.getName() &&
+        if (deviceFound.getName() == dropdownValue &&
+            //deviceFound.getAddress() == _nodeToBeAnalysed.getAddress()) {
+            deviceFound.getAddress() == kNodesMap[dropdownValue]) {
           //print('value.length: ${value.length}');
           temp.add(deviceFound.getRssi());
           // print(deviceFound.getAddress());
@@ -129,7 +131,7 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
       if (rssiList.isNotEmpty) {
         // mode
         _rssiMode = mode(rssiList, rssiList.length);
-        _nodeToBeAnalysed = kNodesMap[dropdownValue];
+        //_nodeToBeAnalysed = kNodesMap[dropdownValue];
 
         _args.model == 1
             ? _distance = calculateDistanceModel1(_rssiMode)
@@ -148,7 +150,8 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
               .collection('realDistance${_realDistance}_$_height')
               .document('$_idCounter')
               .setData({
-            'nodeName': _nodeToBeAnalysed.getName(),
+            //'nodeName': _nodeToBeAnalysed.getName(),
+            'nodeName': dropdownValue,
             //'rssi': _rssiMode,
             'rssi': rssiList,
             //'calcDistance': _distance,
@@ -173,8 +176,10 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
         return ListView(
           children: <Widget>[
             DeviceInfoCard(
-              name: _nodeToBeAnalysed.getName(),
-              address: _nodeToBeAnalysed.getAddress(),
+              //name: _nodeToBeAnalysed.getName(),
+              name: dropdownValue,
+              //address: _nodeToBeAnalysed.getAddress(),
+              address: kNodesMap[dropdownValue],
               rssi: _rssiMode,
             ),
             InfoCard(info: 'Distância Calc: $_distance m'),

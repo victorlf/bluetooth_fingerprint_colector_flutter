@@ -4,6 +4,7 @@ import 'package:bluetooth_fingerprint_colector_flutter/screens/distance_models_s
 import 'package:bluetooth_fingerprint_colector_flutter/screens/fingerprint_screen.dart';
 import 'package:bluetooth_fingerprint_colector_flutter/screens/technology_selection_screen.dart';
 import 'package:bluetooth_fingerprint_colector_flutter/screens/test_model_screen.dart';
+import 'package:bluetooth_fingerprint_colector_flutter/screens/beacon_proximity_bluetooth_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -36,6 +37,8 @@ class MyApp extends StatelessWidget {
         TestModelScreen.id: (context) => TestModelScreen(),
         FingerprintScreen.id: (context) => FingerprintScreen(),
         TestModelBluetoothScreen.id: (context) => TestModelBluetoothScreen(),
+        BeaconProximityBluetoothScreen.id: (context) =>
+            BeaconProximityBluetoothScreen(),
       },
     );
   }
