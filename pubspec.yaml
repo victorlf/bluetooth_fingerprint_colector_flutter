@@ -37,6 +37,9 @@ dependencies:
   #location_permissions: ^3.0.0+1
   location: ^3.0.2
 
+  # Notifications
+  flutter_local_notifications: ^2.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

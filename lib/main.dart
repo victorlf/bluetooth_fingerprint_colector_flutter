@@ -5,12 +5,32 @@ import 'package:bluetooth_fingerprint_colector_flutter/screens/fingerprint_scree
 import 'package:bluetooth_fingerprint_colector_flutter/screens/technology_selection_screen.dart';
 import 'package:bluetooth_fingerprint_colector_flutter/screens/test_model_screen.dart';
 import 'package:bluetooth_fingerprint_colector_flutter/screens/beacon_proximity_bluetooth_screen.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
+  @override
+  initState() {
+    super.initState();
+    var initializationSettingsAndroid =
+        new AndroidInitializationSettings('app_icon');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings =
+        new InitializationSettings(android: initializationSettingsAndroid);
+    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -38,7 +58,21 @@ class MyApp extends StatelessWidget {
         FingerprintScreen.id: (context) => FingerprintScreen(),
         TestModelBluetoothScreen.id: (context) => TestModelBluetoothScreen(),
         BeaconProximityBluetoothScreen.id: (context) =>
-            BeaconProximityBluetoothScreen(),
+            BeaconProximityBluetoothScreen(
+              flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin,
+            ),
+      },
+    );
+  }
+
+  Future onSelectNotification(String payload) async {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return new AlertDialog(
+          title: Text("PayLoad"),
+          content: Text("Payload : $payload"),
+        );
       },
     );
   }

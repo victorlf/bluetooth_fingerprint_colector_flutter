@@ -15,9 +15,16 @@ import 'package:bluetooth_fingerprint_colector_flutter/components/floating_actio
 import 'package:device_info/device_info.dart';
 import 'package:bluetooth_fingerprint_colector_flutter/utilities/mode.dart';
 import 'package:location/location.dart';
+import 'package:bluetooth_fingerprint_colector_flutter/utilities/notification_methods.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class BeaconProximityBluetoothScreen extends StatefulWidget {
   static const String id = 'beacon_proximity_bluetooth_screen';
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
+  const BeaconProximityBluetoothScreen(
+      {Key key, this.flutterLocalNotificationsPlugin})
+      : super(key: key);
   @override
   _BeaconProximityBluetoothScreenState createState() =>
       _BeaconProximityBluetoothScreenState();
@@ -33,6 +40,7 @@ class _BeaconProximityBluetoothScreenState
   List<int> node1RssiList = [];
   List<ScanResult> resultsList = [];
   Device oldCloserDevice;
+  int userLogCounter = 0;
   //Map<String, List<int>> resultsMap = {};
   int _rssiMode;
   double _distance;
@@ -65,7 +73,7 @@ class _BeaconProximityBluetoothScreenState
   Future androidInfoFunc() async {
     AndroidDeviceInfo info = await deviceInfo.androidInfo;
     _androidInfo = info;
-    print('Running on ${_androidInfo.model}'); // e.g. "Moto G (4)"
+    print('Running on ${_androidInfo.androidId}');
 
     Location location = new Location();
 
@@ -155,21 +163,66 @@ class _BeaconProximityBluetoothScreenState
     return Device(maxRssiKey, kNodesMap[maxRssiKey], maxRssiValue);
   }
 
+  Future<void> writeLog(Device device) async {
+    Firestore db = Firestore.instance;
+    bool exists = false;
+
+    try {
+      await db
+          .collection('userLog')
+          .document('bluetooth')
+          .collection('androidID_${_androidInfo.androidId}')
+          .document('${device.getName()}')
+          .get()
+          .then((doc) {
+        if (doc.exists)
+          exists = true;
+        else
+          exists = false;
+      });
+    } catch (e) {
+      return false;
+    }
+
+    if (exists) {
+      db
+          .collection('userLog')
+          .document('bluetooth')
+          .collection('androidID_${_androidInfo.androidId}')
+          .document('${device.getName()}')
+          .updateData({
+        'range': device.getRssi(),
+        'counter': FieldValue.increment(1),
+      });
+    } else {
+      db
+          .collection('userLog')
+          .document('bluetooth')
+          .collection('androidID_${_androidInfo.androidId}')
+          .document('${device.getName()}')
+          .setData({
+        'range': device.getRssi(),
+        'counter': 1,
+      });
+    }
+  }
+
   Widget scanResultsCards(
       bool isScanning, ActionArguments args, List<ScanResult> results) {
     if (isScanning == false) {
       if (results.isNotEmpty) {
-        //LinkedHashMap sortedResultsModeMap = compareScanResults(results);
-        //print(sortedResultsModeMap);
-        //String key = sortedResultsModeMap.;
         Device closerDevice = compareScanResults(results);
         oldCloserDevice = compareScanResults(results);
+        if (userLogCounter == 0) {
+          writeLog(closerDevice);
+          showNotificationWithDefaultSound(
+              widget.flutterLocalNotificationsPlugin);
+          userLogCounter = 1;
+        }
         return ListView(
           children: <Widget>[
             DeviceInfoCard(
-              //name: _nodeToBeAnalysed.getName(),
               name: closerDevice.getName(),
-              //address: _nodeToBeAnalysed.getAddress(),
               address: closerDevice.getAddress(),
               rssi: closerDevice.getRssi(),
             ),
