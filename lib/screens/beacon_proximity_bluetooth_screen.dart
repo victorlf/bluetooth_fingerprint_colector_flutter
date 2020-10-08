@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bluetooth_fingerprint_colector_flutter/screens/technology_selection_screen.dart';
 import 'package:bluetooth_fingerprint_colector_flutter/utilities/action_arguments.dart';
 import 'package:bluetooth_fingerprint_colector_flutter/utilities/node_functions.dart';
 import 'package:bluetooth_fingerprint_colector_flutter/utilities/distance_models.dart';
@@ -15,16 +16,10 @@ import 'package:bluetooth_fingerprint_colector_flutter/components/floating_actio
 import 'package:device_info/device_info.dart';
 import 'package:bluetooth_fingerprint_colector_flutter/utilities/mode.dart';
 import 'package:location/location.dart';
-import 'package:bluetooth_fingerprint_colector_flutter/utilities/notification_methods.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class BeaconProximityBluetoothScreen extends StatefulWidget {
   static const String id = 'beacon_proximity_bluetooth_screen';
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
-  const BeaconProximityBluetoothScreen(
-      {Key key, this.flutterLocalNotificationsPlugin})
-      : super(key: key);
   @override
   _BeaconProximityBluetoothScreenState createState() =>
       _BeaconProximityBluetoothScreenState();
@@ -215,8 +210,6 @@ class _BeaconProximityBluetoothScreenState
         oldCloserDevice = compareScanResults(results);
         if (userLogCounter == 0) {
           writeLog(closerDevice);
-          showNotificationWithDefaultSound(
-              widget.flutterLocalNotificationsPlugin);
           userLogCounter = 1;
         }
         return ListView(
