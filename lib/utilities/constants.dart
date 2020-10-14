@@ -34,7 +34,7 @@ const kInfoTextStyle = TextStyle(
 //Node kNode1 = Node('node1', '30:AE:A4:EC:9C:F6');
 //Node kNode2 = Node('node2', 'FA:KE:AS:FU:CK:00');
 
-Map<String, String> kNodesMap = {
+const Map<String, String> kNodesMap = {
   'node1': '30:AE:A4:EC:9C:F6',
   'node2': '30:AE:A4:EC:A3:8E',
   'node3': '80:7D:3A:93:7A:F2',
