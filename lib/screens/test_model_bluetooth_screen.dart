@@ -24,7 +24,7 @@ class TestModelBluetoothScreen extends StatefulWidget {
 }
 
 class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
-  final String _appBarTitle = 'Teste Bluetooth';
+  final String _appBarTitle = 'Measure Distance';
   bool _locationModeOn = false;
   ActionArguments _args;
   //Node _nodeToBeAnalysed;
@@ -43,7 +43,8 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
   bool _validate = false;
   Color textFieldBorderColor = Colors.black;
   double _realDistance = 1.0;
-  String dropdownValue = 'node1';
+  String dropdownValue = 'node3';
+  //String dropdownValue = 'Lab3I-02';
   double distanceDropdownValue = 1.0;
   double heightDropdownValue = 190.0;
   double _height = 190.0;
@@ -92,9 +93,10 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
     });
     //flutterBlue.startScan(timeout: kFiveSec);
     //flutterBlue.startScan(timeout: kThreeSec);
-    flutterBlue.startScan(timeout: kOneSec);
+    //flutterBlue.startScan(timeout: kOneSec);
     //flutterBlue.startScan(timeout: kTwoSec);
     //flutterBlue.startScan(timeout: kFourSec);
+    flutterBlue.startScan(timeout: Duration(minutes: 1));
 
     await testScanResults(flutterBlue.isScanning, flutterBlue.scanResults);
   }
@@ -182,11 +184,11 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
               address: kNodesMap[dropdownValue],
               rssi: _rssiMode,
             ),
-            InfoCard(info: 'Distância Calc: $_distance m'),
-            InfoCard(info: 'Distância real: $_realDistance m'),
-            InfoCard(info: 'Acurácia: $diff m'),
+            InfoCard(info: 'Calc Distance: $_distance m'),
+            InfoCard(info: 'Real Distance: $_realDistance m'),
+            //InfoCard(info: 'Acurácia: $diff m'),
             InfoCard(
-              info: 'Altura: $_height cm',
+              info: 'Height: $_height cm',
             ),
             InfoCard(info: 'id: $_currentIdCounter')
           ],
@@ -302,8 +304,18 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
                       });
                       //_realDistance = value;
                     },
-                    items: <double>[1.0, 3.0, 5.0]
-                        .map<DropdownMenuItem<double>>((double value) {
+                    items: <double>[
+                      1.0,
+                      2.0,
+                      3.0,
+                      4.0,
+                      5.0,
+                      6.0,
+                      7.0,
+                      8.0,
+                      9.0,
+                      10.0
+                    ].map<DropdownMenuItem<double>>((double value) {
                       return DropdownMenuItem<double>(
                         value: value,
                         child: Text('$value'),
@@ -397,8 +409,13 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
                             dropdownValue = value;
                           });
                         },
-                        items: <String>['node1', 'node2']
-                            .map<DropdownMenuItem<String>>((String value) {
+                        items: <String>[
+                          'node1',
+                          'node2',
+                          'node3',
+                          'node4',
+                          'node5'
+                        ].map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Text(value),
@@ -442,8 +459,18 @@ class _TestModelBluetoothScreenState extends State<TestModelBluetoothScreen> {
                           });
                           //_realDistance = value;
                         },
-                        items: <double>[1.0, 3.0, 5.0]
-                            .map<DropdownMenuItem<double>>((double value) {
+                        items: <double>[
+                          1.0,
+                          2.0,
+                          3.0,
+                          4.0,
+                          5.0,
+                          6.0,
+                          7.0,
+                          8.0,
+                          9.0,
+                          10.0
+                        ].map<DropdownMenuItem<double>>((double value) {
                           return DropdownMenuItem<double>(
                             value: value,
                             child: Text('$value'),

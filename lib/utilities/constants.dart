@@ -35,7 +35,12 @@ const kInfoTextStyle = TextStyle(
 //Node kNode2 = Node('node2', 'FA:KE:AS:FU:CK:00');
 
 const Map<String, String> kNodesMap = {
-  'node1': '30:AE:A4:EC:9C:F6',
-  'node2': '30:AE:A4:EC:A3:8E',
-  'node3': '80:7D:3A:93:7A:F2',
+  //'node1': '30:AE:A4:EC:9C:F6',
+  //'node2': '30:AE:A4:EC:A3:8E',
+  //'node3': '80:7D:3A:93:7A:F2',
+  'node1': '01:00:00:00:00:00',
+  'node2': '02:00:00:00:00:00',
+  'node3': '03:00:00:00:00:00',
+  'node4': '04:00:00:00:00:00',
+  'node5': '05:00:00:00:00:00',
 };

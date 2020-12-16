@@ -1,3 +1,4 @@
+import 'package:bluetooth_fingerprint_colector_flutter/screens/fingerprint_screen.dart';
 import 'package:bluetooth_fingerprint_colector_flutter/screens/test_model_bluetooth_screen.dart';
 import 'package:bluetooth_fingerprint_colector_flutter/screens/beacon_proximity_bluetooth_screen.dart';
 import 'package:bluetooth_fingerprint_colector_flutter/components/reusable_card.dart';
@@ -31,7 +32,7 @@ class _ActionSelectionScreenState extends State<ActionSelectionScreen> {
               colour: Colors.blue,
               cardChild: Center(
                 child: Text(
-                  'Test Model',
+                  'Measure Distance',
                   style: kLabelTextStyle,
                 ),
               ),
@@ -81,8 +82,8 @@ class _ActionSelectionScreenState extends State<ActionSelectionScreen> {
                 Navigator.pushNamed(
                   context,
                   args.technology == 'Bluetooth'
-                      ? TestModelBluetoothScreen.id
-                      : TestModelScreen.id,
+                      ? FingerprintScreen.id
+                      : FingerprintScreen.id,
                   arguments: ActionArguments(
                       technology: args.technology, model: args.model),
                 );
